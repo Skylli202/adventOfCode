@@ -94,6 +94,36 @@ describe('Warehouse', () => {
     expect(warehouse.getLayer(1)).toEqual(['C', 'M', 'P']);
   });
 
+  it('should be able to move multiple crates conservatively from the top of a stack to another stack', () => {
+    const warehouse = new Warehouse();
+    warehouse.addLayer(['Z', 'M', 'P']);
+    warehouse.addLayer(['N', 'C']);
+    warehouse.addLayer(['', 'D']);
+
+    warehouse.moveCratesConservatively(1, 2, 1);
+    expect(warehouse.getLayer(3)).toEqual(['D', '', '']);
+    expect(warehouse.getLayer(2)).toEqual(['N', 'C', '']);
+    expect(warehouse.getLayer(1)).toEqual(['Z', 'M', 'P']);
+
+    warehouse.moveCratesConservatively(3, 1, 3);
+    expect(warehouse.getLayer(4)).toEqual(['', '', 'D']);
+    expect(warehouse.getLayer(3)).toEqual(['', '', 'N']);
+    expect(warehouse.getLayer(2)).toEqual(['', 'C', 'Z']);
+    expect(warehouse.getLayer(1)).toEqual(['', 'M', 'P']);
+
+    warehouse.moveCratesConservatively(2, 2, 1);
+    expect(warehouse.getLayer(4)).toEqual(['', '', 'D']);
+    expect(warehouse.getLayer(3)).toEqual(['', '', 'N']);
+    expect(warehouse.getLayer(2)).toEqual(['C', '', 'Z']);
+    expect(warehouse.getLayer(1)).toEqual(['M', '', 'P']);
+
+    warehouse.moveCratesConservatively(...[1, 1, 2]);
+    expect(warehouse.getLayer(4)).toEqual(['', '', 'D']);
+    expect(warehouse.getLayer(3)).toEqual(['', '', 'N']);
+    expect(warehouse.getLayer(2)).toEqual(['', '', 'Z']);
+    expect(warehouse.getLayer(1)).toEqual(['M', 'C', 'P']);
+  });
+
   it("should be able to tell what's the current highest layer", () => {
     const warehouse = new Warehouse();
     warehouse.addLayer(['Z', 'M', 'P']);

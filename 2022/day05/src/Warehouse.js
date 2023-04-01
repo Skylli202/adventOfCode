@@ -38,6 +38,26 @@ export class Warehouse {
     }
     return this;
   }
+  /**
+   * Move the given amount of crates, which are on top of the stack "from", to the stack in "to" position. But it does
+   * maintain the order to the taken crates.
+   * Warning, from and to are position (not index).
+   * @param {number} amount
+   * @param {number} from
+   * @param {number} to
+   * @return {this}
+   */
+  moveCratesConservatively(amount, from, to) {
+    const movedCrates = [];
+    for (let i = 0; i < amount; i++) {
+      const movedCrate = this.getStack(from).pop();
+      movedCrates.unshift(movedCrate);
+    }
+    movedCrates.forEach((movedCrate) => {
+      this.addCrate(to, movedCrate);
+    });
+    return this;
+  }
 
   /**
    * Add the given crate on top of the stack at the given stackPosition.
