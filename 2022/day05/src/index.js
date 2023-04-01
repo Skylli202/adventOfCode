@@ -19,17 +19,19 @@ const warehouse = new Warehouse();
 warehouse.deserialize(serializedWarehouse);
 console.log('Warehouse before crane orders executed:');
 console.log(warehouse.toString());
-console.log('---');
-console.log(serializedCraneOrders);
-console.log('');
-console.log('');
+// console.log('---');
+// console.log(serializedCraneOrders);
+// console.log('');
+// console.log('');
 
 let craneOrders = serializedCraneOrders
   .split(/\n|\r\n/)
   .map((serializedCraneOrder) => {
     return parseCraneOrder(serializedCraneOrder);
   });
+
 for (let i = 0; i < craneOrders.length; i++) {
+  console.log(craneOrders[i]);
   warehouse.moveCrates(...craneOrders[i]);
 }
 

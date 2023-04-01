@@ -11,6 +11,7 @@ describe('parseCraneOrder', () => {
     ['move 3 from 3 to 7', [3, 3, 7]],
     ['move 3 from 7 to 1', [3, 7, 1]],
     ['move 1 from 9 to 4', [1, 9, 4]],
+    ['move 13 from 4 to 2', [13, 4, 2]],
   ])('should properly parse crane orders', (craneOrder, expectParsing) => {
     expect(parseCraneOrder(craneOrder)).toEqual(expectParsing);
   });
