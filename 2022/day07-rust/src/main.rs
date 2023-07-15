@@ -57,10 +57,10 @@ impl<'a> Directory<'a> {
         return format!("{}", tmp);
     }
 
-    fn add_directory(&mut self, directory: &'a mut Directory<'a>) {
-        self.directories.push(&directory);
-        directory.parent = Some(self);
-    }
+    // fn add_directory(&mut self, directory: &'a mut Directory<'a>) {
+    //     self.directories.push(&directory);
+    //     directory.parent = Some(self);
+    // }
 
     fn size(&self) -> usize {
         let mut tmp: usize = 0;
@@ -112,6 +112,7 @@ fn main() {
     d2.files.push(&f3);
 
     d1.directories.push(&d2);
+    d2.parent = Some(&d1);
 
     println!("{}", d1.pretty_print());
 }
