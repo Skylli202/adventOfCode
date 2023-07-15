@@ -1,0 +1,12 @@
+{
+  "name": "day07-nodejs",
+  "version": "1.0.0",
+  "description": "Day 07 of 2022 Advend of Code",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Elouan GOUINGUENET",
+  "license": "ISC",
+  "type": "module"
+}

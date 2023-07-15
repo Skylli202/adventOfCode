@@ -57,8 +57,8 @@ impl<'a> Directory<'a> {
         return format!("{}", tmp);
     }
 
-    fn add_directory(&mut self, directory: &mut Directory<'a>) {
-        self.directories.push(directory);
+    fn add_directory(&mut self, directory: &'a mut Directory<'a>) {
+        self.directories.push(&directory);
         directory.parent = Some(self);
     }
 
