@@ -10,9 +10,146 @@ fn print_it(grid: &Vec<Vec<char>>) -> () {
     }
 }
 
+fn get_heigth_at(grid: &Vec<Vec<char>>, x: usize, y: usize) -> u32 {
+    grid.get(y).unwrap().get(x).unwrap().to_digit(10).unwrap()
+}
+
+#[test]
+fn test_get_heigth_at() -> () {
+    let input = std::fs::read_to_string("./src/input.test").unwrap();
+    let lines = input.lines();
+    let mut tree_grid: Vec<Vec<char>> = Vec::new();
+
+    for (_, line) in lines.enumerate().filter(|l| !l.1.is_empty()) {
+        tree_grid.push(line.chars().collect::<Vec<_>>())
+    }
+
+    assert_eq!(get_heigth_at(&tree_grid, 0, 0), 3);
+    assert_eq!(get_heigth_at(&tree_grid, 1, 0), 0);
+    assert_eq!(get_heigth_at(&tree_grid, 2, 0), 3);
+    assert_eq!(get_heigth_at(&tree_grid, 3, 0), 7);
+    assert_eq!(get_heigth_at(&tree_grid, 4, 0), 3);
+
+    assert_eq!(get_heigth_at(&tree_grid, 0, 0), 3);
+    assert_eq!(get_heigth_at(&tree_grid, 0, 1), 2);
+    assert_eq!(get_heigth_at(&tree_grid, 0, 2), 6);
+    assert_eq!(get_heigth_at(&tree_grid, 0, 3), 3);
+    assert_eq!(get_heigth_at(&tree_grid, 0, 4), 3);
+
+    assert_eq!(get_heigth_at(&tree_grid, 1, 1), 5);
+
+    assert_eq!(get_heigth_at(&tree_grid, 2, 2), 3);
+
+    assert_eq!(get_heigth_at(&tree_grid, 3, 3), 4);
+
+    assert_eq!(get_heigth_at(&tree_grid, 4, 4), 0);
+}
+
+fn get_right_of(grid: &Vec<Vec<char>>, x: usize, y: usize) -> Vec<char> {
+    return grid.get(y).unwrap().clone().split_off(x + 1);
+}
+
+#[test]
+fn test_get_right_of() -> () {
+    let input = std::fs::read_to_string("./src/input.test").unwrap();
+    let lines = input.lines();
+    let mut tree_grid: Vec<Vec<char>> = Vec::new();
+
+    for (_, line) in lines.enumerate().filter(|l| !l.1.is_empty()) {
+        tree_grid.push(line.chars().collect::<Vec<_>>())
+    }
+
+    println!("-----");
+    print_it(&tree_grid);
+    println!("-----");
+
+    assert_eq!(get_right_of(&tree_grid, 0, 0), ['0', '3', '7', '3'])
+}
+
+fn get_left_of(grid: &Vec<Vec<char>>, x: usize, y: usize) -> Vec<char> {
+    let mut f = grid.get(y).unwrap().clone();
+    f.truncate(x);
+    return f;
+}
+
+#[test]
+fn test_get_left_of() -> () {
+    let input = std::fs::read_to_string("./src/input.test").unwrap();
+    let lines = input.lines();
+    let mut tree_grid: Vec<Vec<char>> = Vec::new();
+
+    for (_, line) in lines.enumerate().filter(|l| !l.1.is_empty()) {
+        tree_grid.push(line.chars().collect::<Vec<_>>())
+    }
+
+    println!("-----");
+    print_it(&tree_grid);
+    println!("-----");
+
+    assert_eq!(get_left_of(&tree_grid, 4, 3), ['3', '3', '5', '4']);
+    assert_eq!(get_left_of(&tree_grid, 2, 2), ['6', '5']);
+}
+
+fn get_top_of(grid: &Vec<Vec<char>>, x: usize, y: usize) -> Vec<char> {
+    let mut result: Vec<char> = Vec::new();
+
+    for i in (0..y).rev() {
+        result.push(*grid.get(i).unwrap().get(x).unwrap());
+    }
+
+    return result;
+}
+
+#[test]
+fn test_get_top_of() -> () {
+    let input = std::fs::read_to_string("./src/input.test").unwrap();
+    let lines = input.lines();
+    let mut tree_grid: Vec<Vec<char>> = Vec::new();
+
+    for (_, line) in lines.enumerate().filter(|l| !l.1.is_empty()) {
+        tree_grid.push(line.chars().collect::<Vec<_>>())
+    }
+
+    println!("-----");
+    print_it(&tree_grid);
+    println!("-----");
+
+    assert_eq!(get_top_of(&tree_grid, 3, 1), ['7']);
+    assert_eq!(get_top_of(&tree_grid, 3, 4), ['4', '3', '1', '7']);
+}
+
+fn get_bottom_of(grid: &Vec<Vec<char>>, x: usize, y: usize) -> Vec<char> {
+    let mut result: Vec<char> = Vec::new();
+
+    for i in y + 1..grid.len() {
+        result.push(*grid.get(i).unwrap().get(x).unwrap());
+    }
+
+    return result;
+}
+
+#[test]
+fn test_get_bottom_of() -> () {
+    let input = std::fs::read_to_string("./src/input.test").unwrap();
+    let lines = input.lines();
+    let mut tree_grid: Vec<Vec<char>> = Vec::new();
+
+    for (_, line) in lines.enumerate().filter(|l| !l.1.is_empty()) {
+        tree_grid.push(line.chars().collect::<Vec<_>>())
+    }
+
+    println!("-----");
+    print_it(&tree_grid);
+    println!("-----");
+
+    assert_eq!(get_bottom_of(&tree_grid, 3, 1), ['3', '4', '9']);
+    assert_eq!(get_bottom_of(&tree_grid, 3, 4), []);
+    assert_eq!(get_bottom_of(&tree_grid, 1, 2), ['3', '5']);
+}
+
 fn main() {
     // Read inputs
-    let input = std::fs::read_to_string("./src/input.test").unwrap();
+    let input = std::fs::read_to_string("./src/input.prod").unwrap();
 
     // Data loading
     let lines = input.lines();
@@ -26,98 +163,81 @@ fn main() {
     println!();
 
     // Start part one solving
-    let mut visible_tree_count: usize = 0;
+    let grid_width = tree_grid.first().unwrap().len();
+    let grid_height = tree_grid.len();
+    let mut visible_tree_count: usize = 0 + (grid_width * 2) + ((grid_height - 2) * 2);
     for y in 1..tree_grid.len() - 1 {
-        for x in 1..tree_grid.first().unwrap().len() - 1 {
-            let current_height = tree_grid
-                .get(y)
-                .unwrap()
-                .get(x)
-                .unwrap()
-                .to_digit(10)
-                .unwrap();
+        for x in 1..grid_width - 1 {
+            let current_height = get_heigth_at(&tree_grid, x, y);
             println!("({},{}) -> {}", x, y, current_height);
 
-            let mut is_visible: bool = true;
             // Try to look upward
-            for i in 0..y {
-                let tree_in_line = tree_grid
-                    .get(i)
-                    .unwrap()
-                    .get(x)
-                    .unwrap()
-                    .to_digit(10)
-                    .unwrap();
+            let mut tree_upward = get_top_of(&tree_grid, x, y)
+                .into_iter()
+                .map(|c| c.to_digit(10).unwrap())
+                .collect::<Vec<u32>>();
+            tree_upward.sort();
+            let highest_tree_upward = *tree_upward.last().unwrap();
+            println!(
+                "Upward trees are {:?}, highest is {}.",
+                tree_upward, highest_tree_upward
+            );
 
-                if tree_in_line >= current_height {
-                    is_visible = false;
-                    break;
-                }
-
-                println!("  ({},{}) -> {}", x, i, tree_in_line);
-            }
-
-            if is_visible {
+            if current_height > highest_tree_upward {
                 println!("... current position is visible from the top.");
                 visible_tree_count += 1;
                 continue;
-            } else {
-                is_visible = true;
             }
 
             // if not visible from upward, look right
-            for i in x + 1..tree_grid.get(y).unwrap().len() {
-                let tree_in_line = tree_grid
-                    .get(y)
-                    .unwrap()
-                    .get(i)
-                    .unwrap()
-                    .to_digit(10)
-                    .unwrap();
+            let mut tree_right = get_right_of(&tree_grid, x, y)
+                .into_iter()
+                .map(|c| c.to_digit(10).unwrap())
+                .collect::<Vec<u32>>();
+            tree_right.sort();
+            let highest_tree_right = *tree_right.last().unwrap();
+            println!(
+                "Right trees are {:?}, highest is {}.",
+                tree_right, highest_tree_right
+            );
 
-                if tree_in_line >= current_height {
-                    is_visible = false;
-                    break;
-                }
-
-                println!("  ({},{}) -> {}", i, y, tree_in_line);
-            }
-
-            if is_visible {
+            if current_height > highest_tree_right {
                 println!("... current position is visible from the right.");
                 visible_tree_count += 1;
                 continue;
-            } else {
-                is_visible = true;
             }
 
             // if not visible from right, look bottom
-            for i in y + 1..tree_grid.len() {
-                let tree_in_line = tree_grid
-                    .get(i)
-                    .unwrap()
-                    .get(x)
-                    .unwrap()
-                    .to_digit(10)
-                    .unwrap();
+            let mut tree_bottom = get_bottom_of(&tree_grid, x, y)
+                .into_iter()
+                .map(|c| c.to_digit(10).unwrap())
+                .collect::<Vec<u32>>();
+            tree_bottom.sort();
+            let highest_tree_bottom = *tree_bottom.last().unwrap();
+            println!(
+                "Bottom trees are {:?}, highest is {}.",
+                tree_bottom, highest_tree_bottom
+            );
 
-                if tree_in_line >= current_height {
-                    is_visible = false;
-                    break;
-                }
-
-                println!("  ({},{}) -> {}", x, i, tree_in_line);
-            }
-
-            if is_visible {
+            if current_height > highest_tree_bottom {
                 println!("... current position is visible from the bottom.");
                 visible_tree_count += 1;
                 continue;
-            } else {
-                is_visible = true;
             }
 
             // if not visible from bottom, look left
+            let mut tree_left = get_left_of(&tree_grid, x, y)
+                .into_iter()
+                .map(|c| c.to_digit(10).unwrap())
+                .collect::<Vec<u32>>();
+            tree_left.sort();
+            let highest_tree_left = *tree_left.last().unwrap();
+
+            if current_height > highest_tree_left {
+                println!("... current position is visible from the left.");
+                visible_tree_count += 1;
+                continue;
+            }
         }
         println!();
     }
