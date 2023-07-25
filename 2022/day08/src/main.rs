@@ -69,6 +69,7 @@ fn test_get_right_of() -> () {
 fn get_left_of(grid: &Vec<Vec<char>>, x: usize, y: usize) -> Vec<char> {
     let mut f = grid.get(y).unwrap().clone();
     f.truncate(x);
+    f.reverse();
     return f;
 }
 
@@ -86,8 +87,8 @@ fn test_get_left_of() -> () {
     print_it(&tree_grid);
     println!("-----");
 
-    assert_eq!(get_left_of(&tree_grid, 4, 3), ['3', '3', '5', '4']);
-    assert_eq!(get_left_of(&tree_grid, 2, 2), ['6', '5']);
+    assert_eq!(get_left_of(&tree_grid, 4, 3), ['4', '5', '3', '3']);
+    assert_eq!(get_left_of(&tree_grid, 2, 2), ['5', '6']);
 }
 
 fn get_top_of(grid: &Vec<Vec<char>>, x: usize, y: usize) -> Vec<char> {
@@ -166,7 +167,7 @@ fn main() {
     let grid_width = tree_grid.first().unwrap().len();
     let grid_height = tree_grid.len();
     let mut visible_tree_count: usize = 0 + (grid_width * 2) + ((grid_height - 2) * 2);
-    for y in 1..tree_grid.len() - 1 {
+    for y in 1..grid_height - 1 {
         for x in 1..grid_width - 1 {
             let current_height = get_heigth_at(&tree_grid, x, y);
             println!("({},{}) -> {}", x, y, current_height);
@@ -178,10 +179,10 @@ fn main() {
                 .collect::<Vec<u32>>();
             tree_upward.sort();
             let highest_tree_upward = *tree_upward.last().unwrap();
-            println!(
-                "Upward trees are {:?}, highest is {}.",
-                tree_upward, highest_tree_upward
-            );
+            // println!(
+            //     "Upward trees are {:?}, highest is {}.",
+            //     tree_upward, highest_tree_upward
+            // );
 
             if current_height > highest_tree_upward {
                 println!("... current position is visible from the top.");
@@ -196,10 +197,10 @@ fn main() {
                 .collect::<Vec<u32>>();
             tree_right.sort();
             let highest_tree_right = *tree_right.last().unwrap();
-            println!(
-                "Right trees are {:?}, highest is {}.",
-                tree_right, highest_tree_right
-            );
+            // println!(
+            //     "Right trees are {:?}, highest is {}.",
+            //     tree_right, highest_tree_right
+            // );
 
             if current_height > highest_tree_right {
                 println!("... current position is visible from the right.");
@@ -214,10 +215,10 @@ fn main() {
                 .collect::<Vec<u32>>();
             tree_bottom.sort();
             let highest_tree_bottom = *tree_bottom.last().unwrap();
-            println!(
-                "Bottom trees are {:?}, highest is {}.",
-                tree_bottom, highest_tree_bottom
-            );
+            // println!(
+            //     "Bottom trees are {:?}, highest is {}.",
+            //     tree_bottom, highest_tree_bottom
+            // );
 
             if current_height > highest_tree_bottom {
                 println!("... current position is visible from the bottom.");
@@ -244,5 +245,79 @@ fn main() {
     println!(
         "Part one solution: number of visible tree is {}.",
         visible_tree_count
+    );
+
+    // part two
+    let mut scenic_scores: Vec<u32> = Vec::new();
+    for y in 1..grid_height - 1 {
+        for x in 1..grid_width - 1 {
+            let current_height = get_heigth_at(&tree_grid, x, y);
+            println!("({},{}) -> {}", x, y, current_height);
+
+            let tree_upward = get_top_of(&tree_grid, x, y)
+                .into_iter()
+                .map(|c| c.to_digit(10).unwrap())
+                .collect::<Vec<u32>>();
+            let tree_right = get_right_of(&tree_grid, x, y)
+                .into_iter()
+                .map(|c| c.to_digit(10).unwrap())
+                .collect::<Vec<u32>>();
+            let tree_bottom = get_bottom_of(&tree_grid, x, y)
+                .into_iter()
+                .map(|c| c.to_digit(10).unwrap())
+                .collect::<Vec<u32>>();
+            let tree_left = get_left_of(&tree_grid, x, y)
+                .into_iter()
+                .map(|c| c.to_digit(10).unwrap())
+                .collect::<Vec<u32>>();
+
+            let mut top_viewing_dist: u32 = 0;
+            for i in 0..tree_upward.len() {
+                top_viewing_dist += 1;
+                if tree_upward.get(i).unwrap() >= &current_height {
+                    break;
+                }
+            }
+
+            let mut right_viewing_dist: u32 = 0;
+            for i in 0..tree_right.len() {
+                right_viewing_dist += 1;
+                if tree_right.get(i).unwrap() >= &current_height {
+                    break;
+                }
+            }
+
+            let mut bottom_viewing_dist: u32 = 0;
+            for i in 0..tree_bottom.len() {
+                bottom_viewing_dist += 1;
+                if tree_bottom.get(i).unwrap() >= &current_height {
+                    break;
+                }
+            }
+
+            let mut left_viewing_dist: u32 = 0;
+            for i in 0..tree_left.len() {
+                left_viewing_dist += 1;
+                if tree_left.get(i).unwrap() >= &current_height {
+                    break;
+                }
+            }
+
+            // println!("top viewing dist: {}", top_viewing_dist);
+            // println!("right viewing dist: {}", right_viewing_dist);
+            // println!("bottom viewing dist: {}", bottom_viewing_dist);
+            // println!("left viewing dist: {} ({:?})", left_viewing_dist, tree_left);
+
+            let scenic_score =
+                top_viewing_dist * right_viewing_dist * bottom_viewing_dist * left_viewing_dist;
+            println!("Scenic score: {}", scenic_score);
+            scenic_scores.push(scenic_score);
+        }
+    }
+
+    scenic_scores.sort();
+    println!(
+        "Part two solution: highest scenic score is {}.",
+        scenic_scores.last().unwrap()
     );
 }
