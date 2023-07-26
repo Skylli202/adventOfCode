@@ -28,18 +28,18 @@ fn main() {
 
     // let mut tail_positions: HashMap<isize, (f32, f32)> = HashMap::new();
     let mut tail_positions: Vec<(f32, f32)> = vec![(0.0, 0.0)];
-    let mut instruction_count: u32 = 0;
+    // let mut instruction_count: u32 = 0;
 
     for instruction in instructions {
-        instruction_count += 1;
-        if instruction_count >= 10 {
-            break;
-        }
+        // instruction_count += 1;
+        // if instruction_count >= 10 {
+        //     break;
+        // }
         let (direction, distance) = instruction.split_once(" ").unwrap();
         println!("Dir:{}, dist:{}", direction, distance);
         let distance = distance.chars().last().unwrap().to_digit(10).unwrap();
 
-        for i in 0..distance {
+        for _ in 0..distance {
             println!(
                 "  head position: {:?}\n  tail position: {:?}",
                 head_position, tail_position
@@ -61,8 +61,7 @@ fn main() {
                 "  d(H,T) = sqrt({:?} + {:?}) = {:?}",
                 q1, q2, head_tail_distance
             );
-            match head_tail_distance
-            {
+            match head_tail_distance {
                 x if x == 2.0 || x == (5 as f32).sqrt() => {
                     add_if_not_in(&mut tail_positions, old_head_position);
                     tail_position = old_head_position;
@@ -75,13 +74,8 @@ fn main() {
                 ),
             }
             println!();
-            // println!(
-            //     "{:?} {:?} | {:?}",
-            //     old_head_position, head_position, tail_positions
-            // );
         }
     }
-    // println!("{:?}", tail_positions)
-    // minus one because of start position
+
     println!("tail positions {}", tail_positions.len());
 }
