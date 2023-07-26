@@ -37,7 +37,15 @@ fn main() {
         // }
         let (direction, distance) = instruction.split_once(" ").unwrap();
         println!("Dir:{}, dist:{}", direction, distance);
-        let distance = distance.chars().last().unwrap().to_digit(10).unwrap();
+        let distance = distance.parse::<isize>();
+        let distance = match distance {
+            Ok(d) => d,
+            Err(err) => panic!(
+                "Could not parse the following instruction {instruction}.\n{}",
+                err
+            ),
+        };
+        println!("{distance}");
 
         for _ in 0..distance {
             println!(
