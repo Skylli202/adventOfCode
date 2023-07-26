@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 fn add_if_not_in(v: &mut Vec<(f32, f32)>, p: (f32, f32)) -> () {
     match v.iter().position(|&e| e == p) {
         None => v.push(p),
