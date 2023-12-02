@@ -1,9 +1,9 @@
 fn main() {
     println!("Hello, world!\nI'm part 1!");
-    let part1_input: &str = include_str!("./part1_input.txt");
+    let input: &str = include_str!("./input.txt");
 
-    let input_result = part1(part1_input);
-    println!(" result is {input_result}.");
+    let input_result = part1(input);
+    println!("result is {input_result}.");
 }
 
 fn part1(input: &str) -> String {
@@ -52,6 +52,7 @@ mod test {
         let result: String = part1(input_example);
         assert_eq!(result, "142");
     }
+
     #[test]
     fn test_01() {
         let result: String = part1("1a2\n1bda\n54");
