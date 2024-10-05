@@ -1,5 +1,3 @@
-use core::panic;
-
 fn main() {
     let input = include_str!("../input.txt");
     let race_records = parse_input(input);
