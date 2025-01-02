@@ -9,12 +9,12 @@ type (
 	Grid  []string
 )
 
-func (g Grid) ChatAtPos(c Coord) (rune, error) {
+func (g Grid) ChatAtCoord(c Coord) (rune, error) {
 	if c.L < 0 || c.C < 0 || c.L >= len(g) || c.C >= len(g[0]) {
 		return 0, errors.New("out of bounds")
 	}
 
-	return 0, nil
+	return []rune(g[c.L])[c.C], nil
 }
 
 func (c Coord) Add(o Coord) Coord {

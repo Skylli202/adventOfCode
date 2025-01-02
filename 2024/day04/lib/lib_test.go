@@ -28,8 +28,30 @@ func Test_GridOutOfBound(t *testing.T) {
 		{0, len(example[0])},
 	}
 	for _, tc := range tCases {
-		_, err := example.ChatAtPos(tc)
+		_, err := example.ChatAtCoord(tc)
 		assert.EqualError(t, err, "out of bounds")
+	}
+}
+
+func Test_GridCharAtCoord(t *testing.T) {
+	tCases := []struct {
+		coord    lib.Coord
+		expected rune
+	}{
+		{
+			coord:    lib.Coord{0, 0},
+			expected: 'M',
+		},
+		{
+			coord:    lib.Coord{3, 7},
+			expected: 'S',
+		},
+	}
+
+	for _, tc := range tCases {
+		actual, err := example.ChatAtCoord(tc.coord)
+		assert.Nil(t, err, "Unexpected error")
+		assert.Equal(t, tc.expected, actual)
 	}
 }
 
