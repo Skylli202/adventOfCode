@@ -20,6 +20,11 @@ var example = lib.Grid{
 	"MXMXAXMASX",
 }
 
+func Test_Example(t *testing.T) {
+	actual := example.Find("XMAS")
+	assert.Equal(t, 18, len(actual))
+}
+
 func Test_GridReadAtCoord(t *testing.T) {
 	tests := []struct {
 		expected  string
@@ -46,7 +51,7 @@ func Test_GridReadAtCoord(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		actual := example.ReadAtCoord(tc.coord, tc.direction)
+		actual := example.ReadAtCoord(tc.coord, tc.direction, 3)
 		assert.Equal(t, tc.expected, actual)
 	}
 }

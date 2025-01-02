@@ -34,13 +34,36 @@ func (d Direction) ToCoord() Coord {
 	return Coord(d)
 }
 
+func (g Grid) Find(word string) []Coord {
+	res := make([]Coord, 0)
+
+	head := rune(word[0])
+	remaining := word[1:]
+
+	for l, line := range g {
+		for c, col := range line {
+			if col != head {
+				continue
+			}
+
+			for _, d := range DIRECTIONS {
+				if g.ReadAtCoord(Coord{l, c}, d, len(remaining)) == remaining {
+					res = append(res, Coord{l, c})
+				}
+			}
+		}
+	}
+
+	return res
+}
+
 // NOTE: Watch out Grid position is not like Maths (x,y)
 // It is (line, column) which correspond to Maths (-y,x).
 // (0,0) is the first character at the top left of the grid.
-func (g Grid) ReadAtCoord(coord Coord, direction Direction) string {
+func (g Grid) ReadAtCoord(coord Coord, direction Direction, length int) string {
 	res := ""
 
-	for range make([]int, 3) {
+	for range make([]int, length) {
 		coord = coord.Add(direction.ToCoord())
 		v, err := g.ChatAtCoord(coord)
 		if err != nil {
