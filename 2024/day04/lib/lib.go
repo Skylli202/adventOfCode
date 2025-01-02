@@ -2,6 +2,7 @@ package lib
 
 import (
 	"errors"
+	"fmt"
 )
 
 var (
@@ -30,6 +31,8 @@ type (
 	Grid  []string
 )
 
+var debug = false
+
 func (d Direction) ToCoord() Coord {
 	return Coord(d)
 }
@@ -46,7 +49,21 @@ func (g Grid) Find(word string) []Coord {
 				continue
 			}
 
+			if debug {
+				fmt.Printf("%#U found at Coord{%d, %d}\n", head, l, c)
+				if l-1 >= 0 {
+					fmt.Printf("%s\n", g[l-1])
+				}
+				fmt.Printf("%s\n", line)
+				if l+1 < len(g) {
+					fmt.Printf("%s\n", g[l+1])
+				}
+			}
+
 			for _, d := range DIRECTIONS {
+				if debug {
+					fmt.Printf("\tReading in direction: %#v\n", d)
+				}
 				if g.ReadAtCoord(Coord{l, c}, d, len(remaining)) == remaining {
 					res = append(res, Coord{l, c})
 				}
@@ -78,6 +95,10 @@ func (g Grid) ReadAtCoord(coord Coord, direction Direction, length int) string {
 func (g Grid) ChatAtCoord(c Coord) (rune, error) {
 	if c.L < 0 || c.C < 0 || c.L >= len(g) || c.C >= len(g[0]) {
 		return 0, errors.New("out of bounds")
+	}
+
+	if debug {
+		fmt.Printf("%#v\n", c)
 	}
 
 	return []rune(g[c.L])[c.C], nil
