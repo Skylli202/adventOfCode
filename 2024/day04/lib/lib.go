@@ -16,3 +16,7 @@ func (g Grid) ChatAtPos(c Coord) (rune, error) {
 
 	return 0, nil
 }
+
+func (c Coord) Add(o Coord) Coord {
+	return Coord{c.L + o.L, c.C + o.C}
+}
