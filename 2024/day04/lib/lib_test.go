@@ -23,6 +23,8 @@ var example = lib.Grid{
 func Test_Example(t *testing.T) {
 	actual := example.Find("XMAS")
 	assert.Equal(t, 18, len(actual))
+	actual = example.FindCross()
+	assert.Equal(t, 9, len(actual))
 }
 
 func Test_GridReadAtCoord(t *testing.T) {

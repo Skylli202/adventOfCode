@@ -37,6 +37,79 @@ func (d Direction) ToCoord() Coord {
 	return Coord(d)
 }
 
+func (g Grid) FindCross() []Coord {
+	res := make([]Coord, 0)
+
+	head := 'A'
+	// Both diagonals of the cross can be written forward, or reversed: 4 scenarios
+	// MAS MAS
+	// MAS SAM
+	// SAM MAS
+	// SAM SAM
+	scenarios := [][]struct {
+		direction Direction
+		expected  rune
+	}{
+		// MAS MAS
+		{
+			{direction: UP_LEFT, expected: 'M'},
+			{direction: DOWN_RIGHT, expected: 'S'},
+			{direction: UP_RIGHT, expected: 'M'},
+			{direction: DOWN_LEFT, expected: 'S'},
+		},
+		// MAS SAM
+		{
+			{direction: UP_LEFT, expected: 'M'},
+			{direction: DOWN_RIGHT, expected: 'S'},
+			{direction: UP_RIGHT, expected: 'S'},
+			{direction: DOWN_LEFT, expected: 'M'},
+		},
+		// SAM MAS
+		{
+			{direction: UP_LEFT, expected: 'S'},
+			{direction: DOWN_RIGHT, expected: 'M'},
+			{direction: UP_RIGHT, expected: 'M'},
+			{direction: DOWN_LEFT, expected: 'S'},
+		},
+		// SAM SAM
+		{
+			{direction: UP_LEFT, expected: 'S'},
+			{direction: DOWN_RIGHT, expected: 'M'},
+			{direction: UP_RIGHT, expected: 'S'},
+			{direction: DOWN_LEFT, expected: 'M'},
+		},
+	}
+
+	for l, line := range g {
+		for c, col := range line {
+			if col != head {
+				continue
+			}
+
+			for _, scenario := range scenarios {
+				correctRuneCounter := 0
+				for _, tc := range scenario {
+					rune, err := g.ChatAtCoord(Coord{l, c}.Add(tc.direction.ToCoord()))
+					if err != nil {
+						continue
+					}
+					if rune != tc.expected {
+						break
+					}
+					correctRuneCounter += 1
+				}
+
+				if correctRuneCounter == len(scenarios) {
+					res = append(res, Coord{l, c})
+					break
+				}
+			}
+		}
+	}
+
+	return res
+}
+
 func (g Grid) Find(word string) []Coord {
 	res := make([]Coord, 0)
 

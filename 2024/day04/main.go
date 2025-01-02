@@ -19,4 +19,5 @@ func main() {
 	grid := lib.Grid(lines)
 
 	log.Printf("Solution to part 1: %d", len(grid.Find("XMAS")))
+	log.Printf("Solution to part 2: %d", len(grid.FindCross()))
 }
