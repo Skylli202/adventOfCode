@@ -20,21 +20,52 @@ var example = lib.Grid{
 	"MXMXAXMASX",
 }
 
+func Test_GridReadAtCoord(t *testing.T) {
+	tests := []struct {
+		expected  string
+		coord     lib.Coord
+		direction lib.Direction
+	}{
+		{coord: lib.Coord{0, 0}, direction: lib.DOWN_LEFT, expected: ""},
+		{coord: lib.Coord{0, 0}, direction: lib.LEFT, expected: ""},
+		{coord: lib.Coord{0, 0}, direction: lib.UP_LEFT, expected: ""},
+		{coord: lib.Coord{0, 0}, direction: lib.UP, expected: ""},
+		{coord: lib.Coord{0, 0}, direction: lib.UP_RIGHT, expected: ""},
+		{coord: lib.Coord{0, 0}, direction: lib.RIGHT, expected: "MMS"},
+		{coord: lib.Coord{0, 0}, direction: lib.DOWN_RIGHT, expected: "SXM"},
+		{coord: lib.Coord{0, 0}, direction: lib.DOWN, expected: "MAM"},
+
+		{coord: lib.Coord{4, 5}, direction: lib.DOWN_LEFT, expected: "MMX"},
+		{coord: lib.Coord{4, 5}, direction: lib.LEFT, expected: "ASA"},
+		{coord: lib.Coord{4, 5}, direction: lib.UP_LEFT, expected: "ASA"},
+		{coord: lib.Coord{4, 5}, direction: lib.UP, expected: "SMM"},
+		{coord: lib.Coord{4, 5}, direction: lib.UP_RIGHT, expected: "MAS"},
+		{coord: lib.Coord{4, 5}, direction: lib.RIGHT, expected: "XAM"},
+		{coord: lib.Coord{4, 5}, direction: lib.DOWN_RIGHT, expected: "XXA"},
+		{coord: lib.Coord{4, 5}, direction: lib.DOWN, expected: "XAA"},
+	}
+
+	for _, tc := range tests {
+		actual := example.ReadAtCoord(tc.coord, tc.direction)
+		assert.Equal(t, tc.expected, actual)
+	}
+}
+
 func Test_GridOutOfBound(t *testing.T) {
-	tCases := []lib.Coord{
+	tests := []lib.Coord{
 		{-1, 0},
 		{0, -1},
 		{len(example), 0},
 		{0, len(example[0])},
 	}
-	for _, tc := range tCases {
+	for _, tc := range tests {
 		_, err := example.ChatAtCoord(tc)
 		assert.EqualError(t, err, "out of bounds")
 	}
 }
 
 func Test_GridCharAtCoord(t *testing.T) {
-	tCases := []struct {
+	tests := []struct {
 		coord    lib.Coord
 		expected rune
 	}{
@@ -48,7 +79,7 @@ func Test_GridCharAtCoord(t *testing.T) {
 		},
 	}
 
-	for _, tc := range tCases {
+	for _, tc := range tests {
 		actual, err := example.ChatAtCoord(tc.coord)
 		assert.Nil(t, err, "Unexpected error")
 		assert.Equal(t, tc.expected, actual)
@@ -57,7 +88,7 @@ func Test_GridCharAtCoord(t *testing.T) {
 
 func Test_CoordAdd(t *testing.T) {
 	c := lib.Coord{3, 3}
-	tCases := []struct {
+	tests := []struct {
 		c        lib.Coord
 		expected lib.Coord
 	}{
@@ -91,7 +122,7 @@ func Test_CoordAdd(t *testing.T) {
 		},
 	}
 
-	for _, tc := range tCases {
+	for _, tc := range tests {
 		actual := c.Add(tc.c)
 		assert.Equal(t, tc.expected, actual)
 	}
